@@ -1,12 +1,14 @@
 const express = require("express");
 const app = express();
-const port = 3000;
+const facebookWebhook = require("./routes/facebookWebhook");
 
 app.use(express.json());
-app.get("/api/hello", (req, res) => {
+app.get("/", (req, res) => {
   res.json({ message: "Hello from backend!" });
 });
 
-app.listen(port, () => {
-  console.log(`Backend listening at http://localhost:${port}`);
+app.use("/webhooks/facebook/webhook", facebookWebhook);
+
+app.listen(3000, () => {
+  console.log("Backend đang chạy tại http://localhost:3000");
 });
