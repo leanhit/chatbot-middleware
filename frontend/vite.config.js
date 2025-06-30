@@ -5,6 +5,8 @@ import vue from '@vitejs/plugin-vue'
 export default defineConfig({
   plugins: [vue()],
   server: {
+    host: true, // Cho phép truy cập từ mạng ngoài
+    allowedHosts: ['admin.traloitudong.com'], // 👈 Thêm domain được phép truy cập
     proxy: {
       '/api': 'http://localhost:3000',
     }

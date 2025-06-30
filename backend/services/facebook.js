@@ -8,7 +8,7 @@ async function sendMessageToFacebook(pageId, recipientId, messageText) {
     return;
   }
 
-  const url = `https://graph.facebook.com/v17.0/me/messages?access_token=${config.page_access_token}`;
+  const url = `https://graph.facebook.com/v18.0/me/messages?access_token=${config.page_access_token}`;
   const payload = {
     recipient: { id: recipientId },
     message: { text: messageText }

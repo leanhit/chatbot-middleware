@@ -16,6 +16,7 @@ async function sendMessageToRasa(senderId, messageText) {
       { headers }
     );
 
+    console.log("✅ Đã gửi tin nhắn tới Rasa:", response.data);
     return response.data || [];
   } catch (err) {
     console.error("❌ Lỗi gửi tới Rasa:", err.message);
