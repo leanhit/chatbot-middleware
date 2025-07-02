@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const fbPages = require("../config/fbPages");
-const { sendMessageToRasa } = require("../services/rasa");
-const { sendMessageToFacebook } = require("../services/facebook");
+const fbPages = require("@/config/fbPages");
+const { sendMessageToBotpress } = require("@/services/botpress"); // Đổi tên module
+const { sendMessageToFacebook } = require("@/services/facebook");
 
 // Xác minh webhook từ Facebook
 router.get("/", (req, res) => {
@@ -23,30 +23,31 @@ router.get("/", (req, res) => {
 router.post("/", async (req, res) => {
   const body = req.body;
 
-  console.log("📬 Nhận webhook từ Facebook:", JSON.stringify(body, null, 2));
+  //console.log("📬 Nhận webhook từ Facebook:", JSON.stringify(body, null, 2));
 
   if (body.object !== "page") return res.sendStatus(404);
 
   try {
     for (const entry of body.entry) {
       const pageId = entry.id;
+      const page = fbPages.find((p) => p.page_id === pageId);
+      const botpress_bot_id = page?.botpress_bot_id;
 
-      // Đảm bảo entry.messaging tồn tại
       if (!entry.messaging) continue;
 
       for (const event of entry.messaging) {
         const senderId = event.sender?.id;
         if (!senderId) continue;
 
-        // 1. Xử lý tin nhắn dạng văn bản
+        // 1. Xử lý tin nhắn văn bản
         if (event.message?.text) {
           const message = event.message.text;
           console.log(`📩 [text] ${senderId}: ${message}`);
 
-          const responses = await sendMessageToRasa(senderId, message);
+          const responses = await sendMessageToBotpress(botpress_bot_id, senderId, message); // ← dùng Botpress
           if (Array.isArray(responses)) {
-            await Promise.all(responses.map(async r => {
-              if (r.text) {
+            await Promise.all(responses.map(async (r) => {
+              if (r.type === "text" && r.text) {
                 try {
                   await sendMessageToFacebook(pageId, senderId, r.text);
                 } catch (err) {
@@ -57,15 +58,15 @@ router.post("/", async (req, res) => {
           }
         }
 
-        // 2. Xử lý postback (click nút)
+        // 2. Postback (nút bấm)
         else if (event.postback?.payload) {
           const payload = event.postback.payload;
           console.log(`🟨 [postback] ${senderId}: ${payload}`);
 
-          const responses = await sendMessageToRasa(senderId, payload);
+          const responses = await sendMessageToBotpress(senderId, payload);
           if (Array.isArray(responses)) {
-            await Promise.all(responses.map(async r => {
-              if (r.text) {
+            await Promise.all(responses.map(async (r) => {
+              if (r.type === "text" && r.text) {
                 try {
                   await sendMessageToFacebook(pageId, senderId, r.text);
                 } catch (err) {
@@ -76,7 +77,7 @@ router.post("/", async (req, res) => {
           }
         }
 
-        // 3. Xử lý đính kèm (ảnh, âm thanh, v.v.)
+        // 3. Đính kèm (ảnh, tệp...)
         else if (event.message?.attachments) {
           const types = event.message.attachments.map(a => a.type).join(", ");
           console.log(`📎 [attachments] ${senderId}: ${types}`);
@@ -87,20 +88,18 @@ router.post("/", async (req, res) => {
           }
         }
 
-        // 4. Trường hợp không xác định
+        // 4. Không xác định
         else {
           console.log("🤷 Không xác định kiểu sự kiện:", JSON.stringify(event, null, 2));
         }
       }
     }
 
-    // Facebook yêu cầu trả 200 để xác nhận đã nhận webhook
     res.sendStatus(200);
   } catch (error) {
     console.error("❌ Lỗi khi xử lý webhook:", error);
     res.sendStatus(500);
   }
 });
-
 
 module.exports = router;

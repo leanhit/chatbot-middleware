@@ -1,5 +1,5 @@
 const axios = require("axios");
-const fbPages = require("../config/fbPages");
+const fbPages = require("@/config/fbPages");
 
 async function sendMessageToFacebook(pageId, recipientId, messageText) {
   const config = fbPages.find(p => p.page_id === pageId);
