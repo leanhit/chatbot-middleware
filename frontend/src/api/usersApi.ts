@@ -8,11 +8,5 @@ export const usersApi = {
 
     register(params: any) {
         return axios.post('/auth/register', params);
-    },
-
-    checkEmail(email: string) {
-        return axios.get('/auth/check-email', {
-            params: { email },
-        });
-    },
+    }
 };

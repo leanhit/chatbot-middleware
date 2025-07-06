@@ -1,18 +1,12 @@
+<script lang="ts" src="@/scripts/home.ts"></script>
 <template>
-    <div class="min-h-screen bg-white">
-        home
+    <div class="box-card w-100 d-flex flex-fill flex-column"
+        v-loading="isChangeViewLoading"
+		:body-style="{ padding: '0.5rem 0.8rem' }">
+        <component
+            :is="currentComponent"
+            @onChangeView="changeView"
+            :viewSettings="viewSettings"
+        ></component>
     </div>
 </template>
-
-<script lang="ts">
-import { reactive } from 'vue';
-
-export default {
-    props: ['viewSettings'],
-    emits: ['onChangeView'],
-    setup(props: any, context: any) {
-        return {
-        };
-    },
-};
-</script>
