@@ -1,8 +1,8 @@
 const pool = require('@/config/db');
 
-const TABLE_NAME = 'facebook_integrations';
+const TABLE_NAME = 'config';
 
-const infoServices = {
+const configServices = {
   // ✅ Thêm bản ghi mới
   add: async ({
     botpress_bot_id,
@@ -58,9 +58,33 @@ const infoServices = {
   },
 
   // ✅ Xem tất cả bản ghi
-  viewAll: async () => {
-    const result = await pool.query(`SELECT * FROM ${TABLE_NAME} ORDER BY id DESC`);
-    return result.rows;
+  viewAll: async (req, res) => {
+    try {
+      const page = parseInt(req.query.page) || 1;
+      const size = parseInt(req.query.size) || 10;
+      const offset = (page - 1) * size;
+
+      const result = await pool.query(`
+            SELECT * FROM ${TABLE_NAME}
+            ORDER BY id DESC
+            LIMIT $1 OFFSET $2
+        `, [size, offset]);
+
+      // Optional: tổng số bản ghi
+      const countResult = await pool.query(`SELECT COUNT(*) FROM ${TABLE_NAME}`);
+      const total = parseInt(countResult.rows[0].count);
+
+      res.status(200).json({
+        content: result.rows,
+        page,
+        size,
+        totalPages: Math.ceil(total / size),
+        totalItems: total
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Lỗi máy chủ' });
+    }
   },
 
   // ✅ Xem bản ghi theo ID
@@ -75,4 +99,4 @@ const infoServices = {
   },
 };
 
-module.exports = infoServices;
+module.exports = configServices;

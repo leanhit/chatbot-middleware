@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 
 const SECRET = process.env.JWT_SECRET || "secret";
 
-
+// REGISTER
 const register = async (req, res) => {
   const { email, password } = req.body;
 
@@ -20,17 +20,26 @@ const register = async (req, res) => {
       return res.status(409).json({ message: "Email đã được sử dụng" });
     }
 
-    // 2. Nếu chưa tồn tại, tiến hành tạo user mới
+    // 2. Tạo user mới
     const insertQuery = `
       INSERT INTO users (email, password)
       VALUES ($1, $2)
       RETURNING id, email
     `;
     const insertResult = await pool.query(insertQuery, [email, password]);
+    const newUser = insertResult.rows[0];
 
-    res.status(201).json({
+    // 3. Tạo JWT
+    const token = jwt.sign(
+      { id: newUser.id, email: newUser.email },
+      SECRET,
+      { expiresIn: "1d" }
+    );
+
+    return res.status(201).json({
       message: "Đăng ký thành công",
-      user: insertResult.rows[0]
+      token,
+      user: newUser
     });
   } catch (error) {
     console.error("Lỗi đăng ký:", error);
@@ -38,11 +47,11 @@ const register = async (req, res) => {
   }
 };
 
+// LOGIN
 const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // 🔍 Tìm user theo email
     const result = await pool.query(
       'SELECT * FROM users WHERE email = $1 LIMIT 1',
       [email]
@@ -54,23 +63,27 @@ const login = async (req, res) => {
 
     const user = result.rows[0];
 
-    // 🧠 So sánh mật khẩu (chưa mã hóa)
     if (user.password !== password) {
       return res.status(401).json({ error: "Sai mật khẩu" });
     }
 
-    // ✅ Tạo JWT
     const token = jwt.sign(
       { id: user.id, email: user.email },
       SECRET,
       { expiresIn: "1d" }
     );
 
-    return res.json({ token });
+    return res.json({
+      token,
+      user: {
+        id: user.id,
+        email: user.email
+      }
+    });
   } catch (err) {
     console.error("Lỗi đăng nhập:", err);
     res.status(500).json({ error: "Lỗi server" });
   }
-}
+};
 
 module.exports = { login, register };

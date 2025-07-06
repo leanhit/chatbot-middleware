@@ -13,6 +13,9 @@ module.exports = [
     app_secret: "477bd70552d19e2442cff782d9310774",
     page_access_token: "EAAO3zSvJou0BO17n1HyEXZBKaqV5aMgMuZA4ilH48Bl6WzCmBulsO2btqmHVYH2DHccApBOZAbOKdoMjAn4vpuGFPINOh1r3wH891TQCYZAFQNwvTk2jl53yo0kjZCmNkrPfsyiZBPKRlWFGrnDx0shTQmjJFmPATZA6RkC1mxZAG9vzjNTm0pWTrxLrIrk1ZC8xQqAeH"
   },{
+    fanpage_url: "https://www.facebook.com/profile.php?id=100090476392433",
+    bot_url:"https://bot.traloitudong.com/studio/buonvieccom/flows/main",
+    bot_name: "buonviec.com",
     botpress_bot_id: "buonvieccom",
     page_id: "101052672950725",
     verify_token: "botpress_verify_token",

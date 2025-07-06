@@ -23,9 +23,9 @@ const initDB = async () => {
     `);
     console.log('✅ Bảng users đã sẵn sàng');
 
-    // Bảng facebook_integrations
+    // Bảng config
     await pool.query(`
-      CREATE TABLE IF NOT EXISTS facebook_integrations (
+      CREATE TABLE IF NOT EXISTS config (
         id SERIAL PRIMARY KEY,
         botpress_bot_id VARCHAR(100) NOT NULL,
         page_id VARCHAR(100) NOT NULL UNIQUE,
@@ -38,7 +38,7 @@ const initDB = async () => {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `);
-    console.log('✅ Bảng facebook_integrations đã sẵn sàng');
+    console.log('✅ Bảng config đã sẵn sàng');
 
   } catch (err) {
     console.error('❌ Lỗi khi khởi tạo bảng:', err);
