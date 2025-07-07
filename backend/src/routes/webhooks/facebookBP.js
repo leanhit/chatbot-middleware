@@ -28,7 +28,8 @@ router.post("/", async (req, res) => {
   try {
     for (const entry of body.entry) {
       const pageId = entry.id;
-      const page = configServices.getPageConfig(pageId);
+      const page = await configServices.getPageConfig(pageId);
+      console.log('page: ', page);
       const botpress_bot_id = page?.botpress_bot_id;
 
       if (!page || !botpress_bot_id) {

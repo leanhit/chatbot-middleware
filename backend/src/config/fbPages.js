@@ -22,4 +22,4 @@ module.exports = [
     app_secret: "bd39eacac74cab70df3022d5654dd888",
     page_access_token: "EAAbk5EYZAnaIBO6CZAvhtI9rT74uHOF8xxniQdPW87wW32WZC14GJKgOQ2q6ZBaotCZAsM5LtNlSj8o2VlXjjE6TbLWscIoQeuHA0EusHTBnBtKjiqPAqZBqp2wbl2qfPMrmNE6GysLM0wY6OaVQsI9uqVZB4gAZBt5ZBMnrI9dpj04bkaSaY3wZCGPFZC1hgzMpEuNWVVD"
   }
-];
+]; 

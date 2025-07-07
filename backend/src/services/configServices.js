@@ -4,38 +4,41 @@ const { pool, tblConfig } = require('@/config/db');
 const configServices = {
   // ✅ Thêm bản ghi mới
   add: async ({
-    botpress_bot_id,
-    page_id,
-    verify_token,
     app_secret,
-    page_access_token,
-    fanpage_url,
-    bot_url,
+    botpress_bot_id,
     bot_name,
+    bot_url,
+    page_id,
+    fanpage_url,
+    page_access_token,
+    url_callback,
+    verify_token
   }, userId) => {
     const query = `
-      INSERT INTO ${tblConfig} 
-        (botpress_bot_id, page_id, verify_token, app_secret, page_access_token, fanpage_url, bot_url, bot_name, user_id)
-      VALUES 
-        ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-      RETURNING *;
-    `;
+    INSERT INTO ${tblConfig} 
+      (app_secret, botpress_bot_id, bot_name, bot_url, page_id, fanpage_url, page_access_token, url_callback, verify_token, user_id)
+    VALUES 
+      ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+    RETURNING *;
+  `;
 
     const values = [
-      botpress_bot_id,
-      page_id,
-      verify_token,
       app_secret,
-      page_access_token,
-      fanpage_url,
-      bot_url,
+      botpress_bot_id,
       bot_name,
-      userId, // Gắn user ID vào dữ liệu
+      bot_url,
+      page_id,
+      fanpage_url,
+      page_access_token,
+      url_callback,
+      verify_token,
+      userId
     ];
 
     const result = await pool.query(query, values);
     return result.rows[0];
   },
+
 
   // ✅ Cập nhật thông tin theo ID, có kiểm tra quyền sở hữu (user_id)
   edit: async (id, data, userId) => {
@@ -117,7 +120,7 @@ const configServices = {
   // -------------lấy thông tin cấu hình của bot theo user-----------------
   getPageConfig: async (pageId) => {
     const query = `
-      SELECT botpress_bot_id, verify_token, app_secret, page_access_token
+      SELECT botpress_bot_id, verify_token, app_secret, page_access_token, page_id
       FROM ${tblConfig}
       WHERE page_id = $1
       LIMIT 1

@@ -1,6 +1,6 @@
 //file configController 
 const configServices = require('@/services/configServices');
-
+const { pool, tblConfig } = require('@/config/db');
 module.exports = {
   add: async (req, res) => {
     try {

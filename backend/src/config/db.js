@@ -30,15 +30,16 @@ const initDB = async () => {
     await pool.query(`
       CREATE TABLE IF NOT EXISTS  ${tblConfig}  (
         id SERIAL PRIMARY KEY,
-        botpress_bot_id VARCHAR(100) NOT NULL,
-        page_id VARCHAR(100) NOT NULL UNIQUE,
-        verify_token TEXT NOT NULL,
         app_secret TEXT NOT NULL,
-        page_access_token TEXT NOT NULL,
-        fanpage_url TEXT,
-        bot_url TEXT,
+        botpress_bot_id VARCHAR(100) NOT NULL,
         bot_name VARCHAR(255),
-        user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+        bot_url TEXT,
+        page_id VARCHAR(100) NOT NULL UNIQUE,
+        fanpage_url TEXT,
+        page_access_token TEXT NOT NULL,
+        url_callback TEXT,
+        verify_token TEXT NOT NULL,
+        user_id INTEGER REFERENCES ${tblUsers}(id) ON DELETE CASCADE,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `);
@@ -48,7 +49,6 @@ const initDB = async () => {
     console.error('❌ Lỗi khi khởi tạo bảng:', err);
   }
 };
-
 
 initDB();
 
