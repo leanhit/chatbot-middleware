@@ -9,23 +9,26 @@ const pool = new Pool({
   port: Number(process.env.DB_PORT),
 });
 
+const tblUsers = 'tblUsers'; // Tên bảng người dùng
+const tblConfig = 'tblConfig'; // Tên bảng cấu hình
+
 // ⚙️ Tạo bảng nếu chưa có
 const initDB = async () => {
   try {
     // Bảng users
     await pool.query(`
-      CREATE TABLE IF NOT EXISTS users (
+      CREATE TABLE IF NOT EXISTS ${tblUsers} (
         id SERIAL PRIMARY KEY,
         email VARCHAR(255) UNIQUE NOT NULL,
         password VARCHAR(255) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `);
-    console.log('✅ Bảng users đã sẵn sàng');
+    console.log('✅ Bảng tblUsers đã sẵn sàng');
 
-    // Bảng config
+    // Bảng config (liên kết với users qua user_id)
     await pool.query(`
-      CREATE TABLE IF NOT EXISTS config (
+      CREATE TABLE IF NOT EXISTS  ${tblConfig}  (
         id SERIAL PRIMARY KEY,
         botpress_bot_id VARCHAR(100) NOT NULL,
         page_id VARCHAR(100) NOT NULL UNIQUE,
@@ -35,16 +38,18 @@ const initDB = async () => {
         fanpage_url TEXT,
         bot_url TEXT,
         bot_name VARCHAR(255),
+        user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `);
-    console.log('✅ Bảng config đã sẵn sàng');
+    console.log('✅ Bảng tblConfig đã sẵn sàng');
 
   } catch (err) {
     console.error('❌ Lỗi khi khởi tạo bảng:', err);
   }
 };
 
+
 initDB();
 
-module.exports = pool;
+module.exports = { pool, tblUsers, tblConfig };

@@ -1,6 +1,5 @@
-const pool = require('@/config/db');
-
-const TABLE_NAME = 'config';
+// File: src/services/configServices.js
+const { pool, tblConfig } = require('@/config/db');
 
 const configServices = {
   // ✅ Thêm bản ghi mới
@@ -13,12 +12,12 @@ const configServices = {
     fanpage_url,
     bot_url,
     bot_name,
-  }) => {
+  }, userId) => {
     const query = `
-      INSERT INTO ${TABLE_NAME} 
-        (botpress_bot_id, page_id, verify_token, app_secret, page_access_token, fanpage_url, bot_url, bot_name)
+      INSERT INTO ${tblConfig} 
+        (botpress_bot_id, page_id, verify_token, app_secret, page_access_token, fanpage_url, bot_url, bot_name, user_id)
       VALUES 
-        ($1, $2, $3, $4, $5, $6, $7, $8)
+        ($1, $2, $3, $4, $5, $6, $7, $8, $9)
       RETURNING *;
     `;
 
@@ -31,14 +30,15 @@ const configServices = {
       fanpage_url,
       bot_url,
       bot_name,
+      userId, // Gắn user ID vào dữ liệu
     ];
 
     const result = await pool.query(query, values);
     return result.rows[0];
   },
 
-  // ✅ Cập nhật thông tin theo ID
-  edit: async (id, data) => {
+  // ✅ Cập nhật thông tin theo ID, có kiểm tra quyền sở hữu (user_id)
+  edit: async (id, data, userId) => {
     const keys = Object.keys(data);
     const values = Object.values(data);
 
@@ -47,31 +47,38 @@ const configServices = {
     const setClause = keys.map((key, index) => `${key} = $${index + 1}`).join(', ');
 
     const query = `
-      UPDATE ${TABLE_NAME}
+      UPDATE ${tblConfig}
       SET ${setClause}
-      WHERE id = $${keys.length + 1}
+      WHERE id = $${keys.length + 1} AND user_id = $${keys.length + 2}
       RETURNING *;
     `;
 
-    const result = await pool.query(query, [...values, id]);
+    const result = await pool.query(query, [...values, id, userId]);
+
+    if (result.rowCount === 0) throw new Error("Không tìm thấy bản ghi hoặc không có quyền chỉnh sửa");
+
     return result.rows[0];
   },
 
-  // ✅ Xem tất cả bản ghi
-  viewAll: async (req, res) => {
+  // ✅ Xem tất cả bản ghi theo user
+  viewAll: async (userId, req, res) => {
     try {
       const page = parseInt(req.query.page) || 1;
       const size = parseInt(req.query.size) || 10;
       const offset = (page - 1) * size;
 
       const result = await pool.query(`
-            SELECT * FROM ${TABLE_NAME}
-            ORDER BY id DESC
-            LIMIT $1 OFFSET $2
-        `, [size, offset]);
+        SELECT * FROM ${tblConfig}
+        WHERE user_id = $1
+        ORDER BY id DESC
+        LIMIT $2 OFFSET $3
+      `, [userId, size, offset]);
 
-      // Optional: tổng số bản ghi
-      const countResult = await pool.query(`SELECT COUNT(*) FROM ${TABLE_NAME}`);
+      const countResult = await pool.query(`
+        SELECT COUNT(*) FROM ${tblConfig}
+        WHERE user_id = $1
+      `, [userId]);
+
       const total = parseInt(countResult.rows[0].count);
 
       res.status(200).json({
@@ -87,16 +94,37 @@ const configServices = {
     }
   },
 
-  // ✅ Xem bản ghi theo ID
-  viewById: async (id) => {
-    const result = await pool.query(`SELECT * FROM ${TABLE_NAME} WHERE id = $1`, [id]);
+  // ✅ Xem bản ghi theo ID và kiểm tra user sở hữu
+  viewById: async (id, userId) => {
+    const result = await pool.query(
+      `SELECT * FROM ${tblConfig} WHERE id = $1 AND user_id = $2`,
+      [id, userId]
+    );
     return result.rows[0];
   },
 
-  // ✅ Xoá bản ghi theo ID
-  delete: async (id) => {
-    await pool.query(`DELETE FROM ${TABLE_NAME} WHERE id = $1`, [id]);
+  // ✅ Xoá bản ghi theo ID và kiểm tra user sở hữu
+  delete: async (id, userId) => {
+    const result = await pool.query(
+      `DELETE FROM ${tblConfig} WHERE id = $1 AND user_id = $2`,
+      [id, userId]
+    );
+    if (result.rowCount === 0) {
+      throw new Error("Không tìm thấy bản ghi hoặc không có quyền xoá");
+    }
   },
+
+  // -------------lấy thông tin cấu hình của bot theo user-----------------
+  getPageConfig: async (pageId) => {
+    const query = `
+      SELECT botpress_bot_id, verify_token, app_secret, page_access_token
+      FROM ${tblConfig}
+      WHERE page_id = $1
+      LIMIT 1
+    `;
+    const result = await pool.query(query, [pageId]);
+    return result.rows[0] || null;
+  }
 };
 
 module.exports = configServices;

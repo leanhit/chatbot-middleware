@@ -1,8 +1,13 @@
+//file config routes
 const express = require("express");
 const router = express.Router();
 const configController = require("@/controllers/configController");
+const jwtMiddleware = require('@/middlewares/jwtMiddleware'); // 👈 import
 
-// Lấy danh sách configs
+// ⚠️ Bảo vệ tất cả route
+router.use(jwtMiddleware);
+
+// Lấy danh sách configs của user
 router.get("/", configController.view);
 
 // Lấy config theo ID

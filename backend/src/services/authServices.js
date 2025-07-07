@@ -1,5 +1,6 @@
-const pool = require('@/config/db');
+const { pool, tblUsers } = require('@/config/db');
 const jwt = require("jsonwebtoken");
+const bcrypt = require('bcrypt');
 
 const SECRET = process.env.JWT_SECRET || "secret";
 
@@ -13,23 +14,26 @@ const register = async (req, res) => {
 
   try {
     // 1. Kiểm tra email đã tồn tại chưa
-    const checkEmailQuery = 'SELECT * FROM users WHERE email = $1';
+    const checkEmailQuery = `SELECT * FROM ${tblUsers} WHERE email = $1`;
     const checkResult = await pool.query(checkEmailQuery, [email]);
 
     if (checkResult.rows.length > 0) {
       return res.status(409).json({ message: "Email đã được sử dụng" });
     }
 
-    // 2. Tạo user mới
+    // 2. Mã hóa mật khẩu
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // 3. Tạo user mới
     const insertQuery = `
-      INSERT INTO users (email, password)
+      INSERT INTO ${tblUsers} (email, password)
       VALUES ($1, $2)
       RETURNING id, email
     `;
-    const insertResult = await pool.query(insertQuery, [email, password]);
+    const insertResult = await pool.query(insertQuery, [email, hashedPassword]);
     const newUser = insertResult.rows[0];
 
-    // 3. Tạo JWT
+    // 4. Tạo JWT
     const token = jwt.sign(
       { id: newUser.id, email: newUser.email },
       SECRET,
@@ -53,7 +57,7 @@ const login = async (req, res) => {
 
   try {
     const result = await pool.query(
-      'SELECT * FROM users WHERE email = $1 LIMIT 1',
+      `SELECT * FROM ${tblUsers} WHERE email = $1 LIMIT 1`,
       [email]
     );
 
@@ -63,7 +67,9 @@ const login = async (req, res) => {
 
     const user = result.rows[0];
 
-    if (user.password !== password) {
+    // So sánh password người dùng nhập và hash trong DB
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
       return res.status(401).json({ error: "Sai mật khẩu" });
     }
 

@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const fbPages = require("@/config/fbPages");
+const configServices = require('@/services/configServices');
 const { sendMessageToBotpress } = require("@/services/botpress");
 const { sendMessageToFacebook } = require("@/services/facebook");
 
@@ -10,7 +10,7 @@ router.get("/", (req, res) => {
   const token = req.query["hub.verify_token"];
   const challenge = req.query["hub.challenge"];
 
-  const page = fbPages.find((p) => p.verify_token === token);
+  const page = configServices.getPageConfig(pageId);
   console.log(`🔍 Xác minh webhook: mode=${mode}, token=${token}, challenge=${challenge}`);
 
   if (mode === "subscribe" && page) {
@@ -28,7 +28,7 @@ router.post("/", async (req, res) => {
   try {
     for (const entry of body.entry) {
       const pageId = entry.id;
-      const page = fbPages.find((p) => p.page_id === pageId);
+      const page = configServices.getPageConfig(pageId);
       const botpress_bot_id = page?.botpress_bot_id;
 
       if (!page || !botpress_bot_id) {
