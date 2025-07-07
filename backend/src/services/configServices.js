@@ -118,11 +118,21 @@ const configServices = {
   },
 
   // -------------lấy thông tin cấu hình của bot theo user-----------------
-  getPageConfig: async (pageId) => {
+  getPageConfigByPageId: async (pageId) => {
     const query = `
       SELECT botpress_bot_id, verify_token, app_secret, page_access_token, page_id
       FROM ${tblConfig}
       WHERE page_id = $1
+      LIMIT 1
+    `;
+    const result = await pool.query(query, [pageId]);
+    return result.rows[0] || null;
+  },
+  getPageConfigByToken: async (verify_token) => {
+    const query = `
+      SELECT botpress_bot_id, verify_token, app_secret, page_access_token, page_id
+      FROM ${tblConfig}
+      WHERE verify_token = $1
       LIMIT 1
     `;
     const result = await pool.query(query, [pageId]);

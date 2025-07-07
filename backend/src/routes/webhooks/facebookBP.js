@@ -10,7 +10,7 @@ router.get("/", (req, res) => {
   const token = req.query["hub.verify_token"];
   const challenge = req.query["hub.challenge"];
 
-  const page = configServices.getPageConfig(pageId);
+  const page = configServices.getPageConfigByPageId(token);
   console.log(`🔍 Xác minh webhook: mode=${mode}, token=${token}, challenge=${challenge}`);
 
   if (mode === "subscribe" && page) {
@@ -28,7 +28,7 @@ router.post("/", async (req, res) => {
   try {
     for (const entry of body.entry) {
       const pageId = entry.id;
-      const page = await configServices.getPageConfig(pageId);
+      const page = await configServices.getPageConfigByPageId(pageId);
       console.log('page: ', page);
       const botpress_bot_id = page?.botpress_bot_id;
 
