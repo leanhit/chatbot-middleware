@@ -1,8 +1,10 @@
 const axios = require("axios");
-const fbPages = require("@/config/fbPages");
+//const fbPages = require("@/config/fbPages");
+const configServices = require('@/services/configServices');
 
 async function sendMessageToFacebook(pageId, recipientId, messageText) {
-  const config = fbPages.find(p => p.page_id === pageId);
+  //const config = fbPages.find(p => p.page_id === pageId);
+  const config = await configServices.getPageConfigByPageId(pageId);
   if (!config) {
     console.error(`❌ Không tìm thấy cấu hình cho page_id: ${pageId}`);
     return;

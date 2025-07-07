@@ -10,7 +10,7 @@ router.get("/", (req, res) => {
   const token = req.query["hub.verify_token"];
   const challenge = req.query["hub.challenge"];
 
-  const page = configServices.getPageConfigByPageId(token);
+  const page = configServices.getPageConfigByToken(token);
   console.log(`🔍 Xác minh webhook: mode=${mode}, token=${token}, challenge=${challenge}`);
 
   if (mode === "subscribe" && page) {
