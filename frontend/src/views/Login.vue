@@ -19,21 +19,35 @@
                                     class="form-control"
                                     placeholder="Email"
                                     required />
-                                <input
-                                    v-model="passwordLogin"
-                                    type="password"
-                                    class="form-control"
-                                    placeholder="Password"
-                                    required />
-                                <transition name="fade">
+
+                                <!-- Password field with toggle -->
+                                <div class="password-wrapper position-relative">
                                     <input
-                                        v-if="!isLoginView"
-                                        v-model="emailConfirm"
-                                        type="email"
+                                        v-model="passwordLogin"
+                                        :type="showPassword ? 'text' : 'password'"
                                         class="form-control"
-                                        placeholder="Confirm Email"
+                                        placeholder="Password"
                                         required />
+                                    <span class="toggle-password" @click="toggleShowPassword">
+                                        {{ showPassword ? '🙈' : '👁️' }}
+                                    </span>
+                                </div>
+
+                                <!-- Confirm Password field with toggle -->
+                                <transition name="fade">
+                                    <div v-if="!isLoginView" class="password-wrapper position-relative">
+                                        <input
+                                            v-model="passwordConfirm"
+                                            :type="showPasswordConfirm ? 'text' : 'password'"
+                                            class="form-control"
+                                            placeholder="Confirm Password"
+                                            required />
+                                        <span class="toggle-password" @click="toggleShowPasswordConfirm">
+                                            {{ showPasswordConfirm ? '🙈' : '👁️' }}
+                                        </span>
+                                    </div>
                                 </transition>
+
                                 <input
                                     type="submit"
                                     class="btn btn-primary"
@@ -63,6 +77,7 @@
         </div>
     </div>
 </template>
+
 
 <style scoped lang="scss">
 @import '@/styles/login.scss';

@@ -13,9 +13,11 @@ export default {
 
         const emailLogin = ref('');
         const passwordLogin = ref('');
-        const emailConfirm = ref('');
+        const passwordConfirm = ref('');
         const emptyFields = ref(false);
         const isLoginView = ref(true);
+        const showPassword = ref(false);
+        const showPasswordConfirm = ref(false);
 
         const router = useRouter();
         const authStore = useAuthStore();
@@ -24,7 +26,7 @@ export default {
             isLoginView.value = !isLoginView.value;
             emailLogin.value = '';
             passwordLogin.value = '';
-            emailConfirm.value = '';
+            passwordConfirm.value = '';
             emptyFields.value = false;
         }
 
@@ -63,7 +65,7 @@ export default {
         }
 
         function doRegister() {
-            if (!emailLogin.value || !passwordLogin.value || !emailConfirm.value) {
+            if (!emailLogin.value || !passwordLogin.value || !passwordConfirm.value) {
                 alert('Please fill in all fields');
                 emptyFields.value = true;
                 return;
@@ -74,7 +76,7 @@ export default {
                 return;
             }
 
-            if (emailLogin.value !== emailConfirm.value) {
+            if (passwordLogin.value !== passwordConfirm.value) {
                 ElMessage.error('Emails do not match.');
                 return;
             }
@@ -100,16 +102,28 @@ export default {
                 });
         }
 
+        function toggleShowPassword() {
+            showPassword.value = !showPassword.value;
+        }
+
+        function toggleShowPasswordConfirm() {
+            showPasswordConfirm.value = !showPasswordConfirm.value;
+        }
+
         return {
             t,
             emailLogin,
             passwordLogin,
-            emailConfirm,
+            passwordConfirm,
             emptyFields,
             isLoginView,
             toggleView,
             doLogin,
             doRegister,
+            toggleShowPassword,
+            toggleShowPasswordConfirm,
+            showPassword,
+            showPasswordConfirm,
         };
     },
 };

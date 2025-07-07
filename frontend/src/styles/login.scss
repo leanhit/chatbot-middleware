@@ -79,3 +79,18 @@ p {
     letter-spacing: 0.8px;
     margin-bottom: 20px;
 }
+
+.password-wrapper {
+    position: relative;
+
+    .toggle-password {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        cursor: pointer;
+        font-size: 1.2rem;
+        color: #555;
+        user-select: none;
+    }
+}

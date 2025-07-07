@@ -13,6 +13,13 @@
       </div>
       <div class="d-flex align-items-center">
         <div class="px-2 w-100">
+          <el-button
+            class="border-0 mx-1 my-1"
+            size="default"
+            type="primary"
+            @click="$emit('onChangeView', { viewName: 'AddConfig', data: null })"            >
+            <span class="ml-1">{{ t("Add Config") }}</span>
+          </el-button>
           <el-button size="default" type="primary" @click="refreshDataFn()">
             <div>{{ t("Check") }}</div>
           </el-button>
@@ -24,17 +31,7 @@
     <div class="card">
       <div class="row">
         <div class="col-lg-12">
-          <div class="card-body pt-0">
-            <el-button
-              class="border-0 mx-1 my-1"
-              size="large"
-              type="primary"
-              @click="$emit('onChangeView', { viewName: 'AddConfig', data: null })"
-            >
-              <el-icon :size="15" style="vertical-align: middle;"><Plus /></el-icon>
-              <span class="ml-1">{{ t("Add Config") }}</span>
-            </el-button>
-
+          <div class="card-body pt-0">            
             <div class="table-responsive rounded card-table">
               <table class="table table-striped table-head-fixed table-borderless w-100 fixed-table">
                 <thead>
