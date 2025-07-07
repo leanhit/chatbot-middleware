@@ -41,10 +41,11 @@
                     <th style="width: 10%">{{ t("Bot Name") }}</th>
                     <th style="width: 10%">{{ t("Bot Url") }}</th>
                     <th style="width: 10%">{{ t("PageID") }}</th>
-                    <th style="width: 10%">{{ t("Verify Token") }}</th>
-                    <th style="width: 10%">{{ t("App Secret") }}</th>
                     <th style="width: 10%">{{ t("Page Access Token") }}</th>
                     <th style="width: 10%">{{ t("Fanpage Url") }}</th>
+                    <th style="width: 10%">{{ t("App Secret") }}</th>
+                    <th style="width: 10%">{{ t("Url Callback") }}</th>
+                    <th style="width: 10%">{{ t("Verify Token") }}</th>
                     <th style="width: 10%">{{ t("Created At") }}</th>
                     <th style="width: 5%">{{ t("Action") }}</th>
                   </tr>
@@ -64,17 +65,20 @@
                     <td class="text-left text-truncate" :title="itemData.page_id">
                       <span class="truncate-text">{{ itemData.page_id }}</span>
                     </td>
-                    <td class="text-left text-truncate" :title="itemData.verify_token">
-                      <span class="truncate-text">{{ itemData.verify_token }}</span>
-                    </td>
-                    <td class="text-left text-truncate" :title="itemData.app_secret">
-                      <span class="truncate-text">{{ itemData.app_secret }}</span>
-                    </td>
                     <td class="text-left text-truncate" :title="itemData.page_access_token">
                       <span class="truncate-text">{{ itemData.page_access_token }}</span>
                     </td>
                     <td class="text-left text-truncate" :title="itemData.fanpage_url">
                       <span class="truncate-text">{{ itemData.fanpage_url }}</span>
+                    </td>
+                    <td class="text-left text-truncate" :title="itemData.app_secret">
+                      <span class="truncate-text">{{ itemData.app_secret }}</span>
+                    </td>                    
+                    <td class="text-left text-truncate" :title="itemData.url_callback">
+                      <span class="truncate-text">{{ itemData.url_callback }}</span>
+                    </td>
+                    <td class="text-left text-truncate" :title="itemData.verify_token">
+                      <span class="truncate-text">{{ itemData.verify_token }}</span>
                     </td>
                     <td class="text-left text-truncate" :title="itemData.created_at">
                       <span class="truncate-text">{{ itemData.created_at }}</span>

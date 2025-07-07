@@ -25,21 +25,38 @@
                 <el-form ref="formRef" :model="itemModel" :rules="rules" label-width="0" class="ruleForm">
                 <div class="row">
                     <div class="col-12">
-                    <div class="py-2 px-2" v-for="(label, key) in {
-                        botpress_bot_id: 'Botpress Bot ID',
-                        bot_name: 'Bot Name',
-                        bot_url: 'Bot URL',
-                        page_id: 'Page ID',
-                        page_access_token: 'Page Access Token',
-                        fanpage_url: 'Fanpage URL',
-                        verify_token: 'Verify Token',
-                        app_secret: 'App Secret'
-                    }" :key="key">
-                        <strong>{{ label }}</strong>
-                        <el-form-item :prop="key">
-                        <el-input v-model="itemModel[key]" size="large" :placeholder="label" />
-                        </el-form-item>
-                    </div>
+                        <div class="py-2 px-2" v-for="(label, key) in {
+                            app_secret: 'App Secret',
+                            botpress_bot_id: 'Botpress Bot ID',
+                            bot_name: 'Bot Name',
+                            bot_url: 'Bot URL',
+                            page_id: 'Page ID',
+                            page_access_token: 'Page Access Token',
+                            fanpage_url: 'Fanpage URL',
+                            url_callback: 'URL Callback',
+                            verify_token: 'Verify Token'
+                        }" :key="key">
+                            <strong>
+                                {{ label }} 
+                                <a v-if="!(key === 'bot_name' || key === 'bot_url' || key === 'fanpage_url')"
+                                class="text-warning">
+                                ( {{ t("Use in connection") }})
+                                </a>
+                                <a v-if="(key === 'bot_url' || key === 'fanpage_url')"
+                                :href="itemModel[key]"
+                                target="_blank"
+                                class="text-primary">
+                                ( {{ t("Go to page") }})
+                                </a>
+                            </strong>
+                            <el-form-item :prop="key">
+                            <el-input v-model="itemModel[key]" 
+                                size="large" 
+                                :placeholder="label"                                 
+                                :disabled="key === 'url_callback'"
+                                />
+                            </el-form-item>
+                        </div>
                     </div>
                 </div>
                 </el-form>

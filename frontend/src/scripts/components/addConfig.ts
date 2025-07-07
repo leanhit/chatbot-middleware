@@ -17,12 +17,13 @@ export default {
             id: '',
             botpress_bot_id: '',
             page_id: '',
-            verify_token: '',
+            verify_token: 'botpress_verify_token',
             app_secret: '',
             page_access_token: '',
-            fanpage_url: '',
-            bot_url: '',
-            bot_name: '',
+            fanpage_url: 'fanpage_url',
+            bot_url: 'bot_url',
+            bot_name: 'bot_name',
+            url_callback: 'https://traloitudong.com/webhooks/facebook/botpress',
             created_at: ''
         })
 
@@ -33,9 +34,6 @@ export default {
             verify_token: [{ required: true, message: 'Verify Token là bắt buộc', trigger: 'blur' }],
             app_secret: [{ required: true, message: 'App Secret là bắt buộc', trigger: 'blur' }],
             page_access_token: [{ required: true, message: 'Page Access Token là bắt buộc', trigger: 'blur' }],
-            bot_url: [{ required: true, message: 'Bot URL là bắt buộc', trigger: 'blur' }],
-            fanpage_url: [{ required: true, message: 'Fanpage URL là bắt buộc', trigger: 'blur' }],
-            bot_name: [{ required: true, message: 'Tên bot là bắt buộc', trigger: 'blur' }],
         }
 
         onMounted(() => {
