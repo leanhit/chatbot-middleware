@@ -1,6 +1,6 @@
 <template>
     <nav
-        class="flex items-center justify-between p-4 border-b shadow-sm bg-white sticky top-0 z-50">
+        class="flex items-center justify-between p-2 border-b shadow-sm bg-white sticky top-0 z-50">
         <!-- Logo -->
         <router-link to="/" class="text-2xl font-bold text-pink-600">
             <img
@@ -102,6 +102,16 @@
                                     <p class="font-semibold text-gray-800">{{ user.email }}</p>
                                 </div>
                             </li>
+                            <li
+                                class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">
+                                <router-link
+                                    to="/help"
+                                    class="block w-full h-full">
+                                    {{ t('Help') }}
+                                </router-link>
+                            </li>
+
+                            <li class="border-t my-2"></li>
 
                             <li
                                 @click="handleLogout"

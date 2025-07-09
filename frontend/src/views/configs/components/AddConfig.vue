@@ -1,6 +1,6 @@
 <script
     lang="ts"
-    src="@/scripts/components/addConfig.ts"></script>
+    src="@/scripts/configs/components/addConfig.ts"></script>
 <template>
     <div class="flex-fill d-flex flex-column w-100 p-2" v-loading="isLoading">
         <div class="d-flex align-items-center justify-content-between pb-3">
@@ -48,6 +48,19 @@
                                 class="text-primary">
                                 ( {{ t("Go to page") }})
                                 </a>
+                                <el-tooltip
+                                    v-if="key === 'verify_token' || key === 'url_callback'"
+                                    :content="copiedKey === key ? t('Copied!') : t('Copy')"
+                                    placement="top"
+                                    >
+                                    <button
+                                        @click="copyToClipboard(itemModel[key], key)"
+                                        type="button"
+                                        class="text-primary hover:underline ml-2"
+                                    >
+                                        ( {{ t("Copy") }} )
+                                    </button>
+                                </el-tooltip>
                             </strong>
                             <el-form-item :prop="key">
                             <el-input v-model="itemModel[key]" 

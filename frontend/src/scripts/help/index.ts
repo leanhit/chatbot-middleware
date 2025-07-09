@@ -5,15 +5,11 @@ import { useI18n } from 'vue-i18n';
 export default {
     components: {
         ListData: defineAsyncComponent({
-            loader: () => import('@/views/configs/components/List.vue'),
+            loader: () => import('@/views/help/components/List.vue'),
             loadingComponent: SkeletonBox,
         }),
-        AddConfig: defineAsyncComponent({
-            loader: () => import('@/views/configs/components/AddConfig.vue'),
-            loadingComponent: SkeletonBox,
-        }),
-        EditConfig: defineAsyncComponent({
-            loader: () => import('@/views/configs/components/AddConfig.vue'),
+        StepCreate: defineAsyncComponent({
+            loader: () => import('@/views/help/components/StepCreate.vue'),
             loadingComponent: SkeletonBox,
         }),
     },
@@ -23,7 +19,7 @@ export default {
         const currentComponent = ref('ListData');
         const viewSettings = ref({
             viewName: 'ListData',
-            title: t('Configs '),
+            title: t('Help'),
             dataItem: null,
         });
         const changeView = (paramsObject: { viewName: string; data: any }) => {
@@ -33,22 +29,15 @@ export default {
                     case 'ListData':
                         viewSettings.value = {
                             viewName: 'ListData',
-                            title: t("Configs"),
+                            title: t("Help"),
                             dataItem: null,
                         };
                         break;
-                    case 'AddConfig':
+                    case 'StepCreate':
                         viewSettings.value = {
-                            viewName: 'AddConfig',
-                            title: t('Add Config'),
-                            dataItem: paramsObject.data,
-                        };
-                        break;
-                    case 'EditConfig':
-                        viewSettings.value = {
-                            viewName: 'EditConfig',
-                            title: t('Edit Config'),
-                            dataItem: paramsObject.data,
+                            viewName: 'StepCreate',
+                            title: t("Step Create"),
+                            dataItem: null,
                         };
                         break;
                 }

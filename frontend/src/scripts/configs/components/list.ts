@@ -1,9 +1,11 @@
 import { useI18n } from "vue-i18n";
 import { ref, reactive, watch, onMounted } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { filterDataFunction, splitData } from "@/scripts/components/search";
+import { filterDataFunction, splitData, formatDateTime } from "@/scripts/configs/components/search";
 import { configApi } from "@/api/configApi";
 import { useDataCategoryStore } from "@/stores/dataCategory";
+import { useSearchStore } from "@/stores/search";
+
 
 export default {
     props: ["viewSettings"],
@@ -11,23 +13,24 @@ export default {
     setup(props: any, context: any) {
         const { t } = useI18n();
         const categoryStore = useDataCategoryStore();
+        const searchStore = useSearchStore();
+
         const filterData = ref("");
         const filter = ref("ALL");
         const listItems = ref([]);
         const isLoading = ref(false);
         const tempList = ref([]);
-        const allConfig = ref([]);
 
         const configDetail = reactive({
             id: "",
-            botpress_bot_id:"",
-            page_id:"",
-            verify_token:"",
-            app_secret:"",
-            page_access_token:"",
-            fanpage_url:"",
-            bot_url:"",
-            bot_name:"",
+            botpress_bot_id: "",
+            page_id: "",
+            verify_token: "",
+            app_secret: "",
+            page_access_token: "",
+            fanpage_url: "",
+            bot_url: "",
+            bot_name: "",
         });
 
         const pagePagination = reactive({
@@ -38,7 +41,7 @@ export default {
 
         refreshDataFn();
 
-        async function refreshDataFn() {            
+        async function refreshDataFn() {
             tempList.value = [];
             listItems.value = [];
 
@@ -49,7 +52,7 @@ export default {
 
             listItems.value = tempList.value;
         }
-        
+
         const deleteConfig = (id: any) => {
             ElMessageBox.confirm(t("Are you sure you want to delete this config?"), t("Warning"), {
                 confirmButtonText: t("Yes"),
@@ -74,10 +77,21 @@ export default {
                 });
         };
 
+        watch(
+            () => searchStore.query,
+            (newVal) => {
+                console.log("Search query changed:", newVal);
+                if (!newVal) {
+                    listItems.value = tempList.value; // Nếu xóa ô search thì show lại full list
+                } else {
+                    listItems.value = filterDataFunction(newVal, tempList.value);
+                }
+            }
+        );
 
 
 
-        watch(filterData, () => (listItems.value = filterDataFunction(filterData.value, tempList.value)));
+        //watch(filterData, () => (listItems.value = filterDataFunction(filterData.value, tempList.value)));
 
         const handleSizeChange = (size: number) => {
             pagePagination.pageSize = size;
@@ -101,6 +115,7 @@ export default {
             configDetail,
             filter,
             deleteConfig,
+            formatDateTime
         };
     },
 };

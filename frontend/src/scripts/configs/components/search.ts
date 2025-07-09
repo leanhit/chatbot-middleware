@@ -7,13 +7,14 @@ function removeAccents(str: string) {
 }
 
 function filterDataFunction(inputStr: string, inputArr: []): [] {
+    console.log("filterDataFunction", inputStr, inputArr);
     const temp = [];
     const searchTxt = removeAccents(inputStr);
     inputArr.forEach(item => {
         const searchIn = removeAccents(
-            item?.description + " " +
-            item?.name + " " +
-            item?.price + " " 
+            item?.botpress_bot_id + " " +
+            item?.page_id + " " +
+            item?.app_secret + " " 
         );
         if (searchIn.toLowerCase().includes(searchTxt.toLocaleLowerCase())) {
             temp.push(item);
@@ -26,9 +27,9 @@ function filterFunction(inputStr: string, inputArr: []): [] {
     const temp = [];
     inputArr.forEach(item => {
         const searchIn = 
-            item?.description + " " +
-            item?.name + " " +
-            item?.status + " " 
+            item?.botpress_bot_id + " " +
+            item?.page_id + " " +
+            item?.app_secret + " " 
         
         if (searchIn.includes(inputStr)) {
             temp.push(item);

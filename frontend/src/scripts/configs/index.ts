@@ -15,7 +15,7 @@ export default {
         EditConfig: defineAsyncComponent({
             loader: () => import('@/views/configs/components/AddConfig.vue'),
             loadingComponent: SkeletonBox,
-        }),
+        })
     },
     setup() {
         const { t } = useI18n();

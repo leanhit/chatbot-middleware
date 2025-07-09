@@ -1,4 +1,4 @@
-<script lang="ts" src="@/scripts/configs/index.ts"></script>
+<script lang="ts" src="@/scripts/help/index.ts"></script>
 <template>
     <div class="box-card w-100 d-flex flex-fill flex-column"
         v-loading="isChangeViewLoading"

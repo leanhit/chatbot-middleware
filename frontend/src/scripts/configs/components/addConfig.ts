@@ -13,17 +13,18 @@ export default {
         const isLoading = ref(false);
         const viewName = ref("");
         const formRef = ref<FormInstance>();
+        const copiedKey = ref(null);
         const itemModel = ref({
             id: '',
             botpress_bot_id: '',
             page_id: '',
-            verify_token: 'botpress_verify_token',
             app_secret: '',
             page_access_token: '',
-            fanpage_url: 'fanpage_url',
-            bot_url: 'bot_url',
-            bot_name: 'bot_name',
+            fanpage_url: '',
+            bot_url: '',
+            bot_name: '',
             url_callback: 'https://traloitudong.com/webhooks/facebook/botpress',
+            verify_token: 'botpress_verify_token',
             created_at: ''
         })
 
@@ -83,7 +84,7 @@ export default {
             configApi
                 .addConfig(data)
                 .then((response: any) => {
-                    if (response.data) {                        
+                    if (response.data) {
                         ElMessage({
                             message: t('Successful!'),
                             type: 'success',
@@ -91,7 +92,7 @@ export default {
                         context.emit('onChangeView', {
                             viewName: 'ListData',
                             data: null,
-                        });                        
+                        });
                     } else {
                         ElMessage.error(`Oops, ${response.message}`);
                     }
@@ -131,6 +132,21 @@ export default {
 
         }
 
+        const copyToClipboard = async (text, key) => {
+            try {
+                await navigator.clipboard.writeText(text);
+                copiedKey.value = key;
+                ElMessage.success("Đã sao chép!");
+
+                // Reset tooltip sau 1.5 giây
+                setTimeout(() => {
+                    copiedKey.value = null;
+                }, 1500);
+            } catch (err) {
+                ElMessage.error("Không thể sao chép");
+            }
+        };
+
         return {
             t,
             isLoading,
@@ -138,7 +154,9 @@ export default {
             formRef,
             rules,
             menu,
-            onSubmit
+            copiedKey,
+            onSubmit,
+            copyToClipboard
         };
     }
 };
