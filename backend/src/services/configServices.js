@@ -135,7 +135,7 @@ const configServices = {
       WHERE verify_token = $1
       LIMIT 1
     `;
-    const result = await pool.query(query, [pageId]);
+    const result = await pool.query(query, [verify_token]);
     return result.rows[0] || null;
   }
 };
