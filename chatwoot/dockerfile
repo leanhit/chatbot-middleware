@@ -1,0 +1,21 @@
+FROM chatwoot/chatwoot:latest
+
+# Tạo thư mục initializer và ghi các file cấu hình cần thiết (không ghi CORS)
+RUN mkdir -p /app/config/initializers && \
+    \
+    # Ghi file cấu hình session cookie
+    printf "%s\n" \
+"Rails.application.config.session_store :cookie_store," \
+"  key: '_chatwoot_session'," \
+"  domain: '.traloitudong.com'," \
+"  same_site: :none," \
+"  secure: true" \
+> /app/config/initializers/session_store.rb && \
+    \
+    # Ghi file cấu hình WebSocket allowed origins
+    printf "%s\n" \
+"Rails.application.config.action_cable.allowed_request_origins = [" \
+"  'https://chat.traloitudong.com'," \
+"  'https://cwsv.traloitudong.com'" \
+"]" \
+> /app/config/initializers/action_cable_origins.rb

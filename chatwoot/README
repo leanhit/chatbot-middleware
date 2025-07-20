@@ -1,0 +1,36 @@
+Tạo Dockerfile của bạn lại như sau:
+
+Dockerfile:
+--------------------------------
+FROM chatwoot/chatwoot:latest
+
+# Ghi file Ruby initializer để bật CORS
+RUN mkdir -p /app/config/initializers && \
+    cat <<EOF > /app/config/initializers/zz_cors.rb
+Rails.application.config.middleware.insert_before 0, Rack::Cors do |config|
+  config.allow do |allow|
+    allow.origins 'https://chat.traloitudong.com'
+    allow.resource '*',
+      headers: :any,
+      methods: [:get, :post, :put, :patch, :delete, :options, :head],
+      credentials: true
+  end
+end
+EOF
+-------------------------------
+
+✅ Tiếp theo:
+Đảm bảo Dockerfile lưu ở cùng thư mục docker-compose.yml.
+
+Trong docker-compose.yml, dùng:
+yaml
+-------------------------------
+    build:
+      context: .
+      dockerfile: Dockerfile
+-------------------------------
+
+Chạy:
+docker-compose down
+docker-compose build chatwoot
+docker-compose up -d

@@ -11,6 +11,7 @@ const pool = new Pool({
 
 const tblUsers = 'tblUsers'; // Tên bảng người dùng
 const tblConfig = 'tblConfig'; // Tên bảng cấu hình
+const tblChatwootConfig = 'tblChatwootConfig'; // Bảng cấu hình Chatwoot
 
 // ⚙️ Tạo bảng nếu chưa có
 const initDB = async () => {
@@ -44,6 +45,22 @@ const initDB = async () => {
       );
     `);
     console.log('✅ Bảng tblConfig đã sẵn sàng');
+
+    // ⚙️ Tạo bảng Chatwoot config
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS ${tblChatwootConfig} (
+        id SERIAL PRIMARY KEY,
+        account_id INTEGER NOT NULL,
+        inbox_id INTEGER NOT NULL UNIQUE,
+        botpress_bot_id VARCHAR(100) NOT NULL,
+        api_access_token TEXT NOT NULL,
+        api_base_url TEXT NOT NULL, -- ví dụ: https://your-chatwoot.com
+        tag_if_empty TEXT,
+        user_id INTEGER REFERENCES ${tblUsers}(id) ON DELETE CASCADE,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+    console.log('✅ Bảng tblChatwootConfig đã sẵn sàng');
 
   } catch (err) {
     console.error('❌ Lỗi khi khởi tạo bảng:', err);

@@ -1,5 +1,5 @@
 // File: src/services/configServices.js
-const { pool, tblConfig } = require('@/config/db');
+const { pool, tblConfig, tblChatwootConfig } = require('@/config/db');
 
 const configServices = {
   // ✅ Thêm bản ghi mới
@@ -137,6 +137,21 @@ const configServices = {
     `;
     const result = await pool.query(query, [verify_token]);
     return result.rows[0] || null;
+  },
+
+  getPageConfigByToken: async (token) => {
+    const res = await pool.query(`SELECT * FROM ${tblConfig} WHERE verify_token = $1 LIMIT 1`, [token]);
+    return res.rows[0];
+  },
+
+  getPageConfigByPageId: async (pageId) => {
+    const res = await pool.query(`SELECT * FROM ${tblConfig} WHERE page_id = $1 LIMIT 1`, [pageId]);
+    return res.rows[0];
+  },
+
+  getChatwootConfigByInboxId: async (inboxId) => {
+    const res = await pool.query(`SELECT * FROM ${tblChatwootConfig} WHERE inbox_id = $1 LIMIT 1`, [inboxId]);
+    return res.rows[0];
   }
 };
 
