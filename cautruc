@@ -1,0 +1,59 @@
++-------------------+
+|                   | 
+|   Người dùng cuối  |
+|   (End-User)      |
+|                   |
++---------+---------+
+          |
+          | (Tin nhắn)
+          v
++-------------------+
+|                   |
+|   Kênh bên ngoài  |
+|   (Zalo, FB, v.v.)|
+|                   |
++---------+---------+
+          |
+          | (Webhook/API)
+          v
++-------------------------------------------------------------------+
+|                                                                   |
+|             Backend/Middleware của bạn (chatbot-middleware)       |
+|             (Nơi xử lý logic chính của hệ thống)                 |
+|                                                                   |
+| +---------------------+   +-----------------------+   +---------+ |
+| | Channel Connectors  |-->| Chatwoot API          |<--| Your DB | |
+| | (Zalo, FB API, v.v.)|   | Integration           |   | (Khách hàng, |
+| +---------------------+   | (Tạo Inbox, đẩy tin,  |   | Chatbot Configs) |
+|           ^               | nhận webhook từ CW)   |   |           |
+|           |               +-----------------------+   +---------+ |
+|           | (Tin nhắn)                                     ^     |
+|           |                                                |     |
+|           +------------------------------------------------+     |
+|                                                                   |
+| +---------------------+                                           |
+| | Logic Chatbot       |                                           |
+| | (Xử lý tin nhắn,    |                                           |
+| | kịch bản, AI)       |                                           |
+| +---------------------+                                           |
+|                                                                   |
++-------------------------------------------------------------------+
+          ^                                 ^
+          | (API Requests)                  | (API Requests)
+          |                                 |
++---------+---------+             +---------+---------+
+|                   |             |                   |
+|   Custom UI của bạn |             |   Chatwoot Instance |
+|   (Quản lý khách hàng, |             |   (Unified Inbox,  |
+|   chatbot, kênh, báo cáo) |             |   CRM Hội thoại)   |
+|                   |             |                   |
++---------+---------+             +---------+---------+
+          ^                                 |
+          | (Quản trị viên/Agent của khách hàng)
+          |
++---------+---------+
+|                   |
+|   Khách hàng của bạn|
+|   (Your Customer) |
+|                   |
++-------------------+
