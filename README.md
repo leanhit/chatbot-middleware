@@ -12,3 +12,5 @@ build & deploy: NODE_OPTIONS=--openssl-legacy-provider yarn build:deploy
 docker-compose down --volumes --remove-orphans
  docker-compose build --no-cache
  docker-compose up -d
+
+sudo nginx -t && sudo systemctl reload nginx
